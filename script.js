@@ -59,6 +59,30 @@ function showView(viewElement) {
     }
 }
 
+const loginForm = document.getElementById('loginForm');
+
+loginForm?.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const user = document.getElementById('user').value.trim();
+  const password = document.getElementById('pass').value.trim();
+
+  const response = await fetch('/api/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ user, password }),
+  });
+  const result = await response.json();
+
+  if (response.ok) {
+    alert('¡Login exitoso!');
+    localStorage.setItem('adminLoggedIn', 'true');
+    window.location.href = '/admin/index.html';
+  } else {
+    alert(result.error || 'Error al iniciar sesión');
+  }
+});
+
+
 function loadProductManagementView() {
     showView(productManagementView);
     console.log("Cargando vista de gestión de productos...");
