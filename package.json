@@ -1,0 +1,13 @@
+{
+  "name": "admin-dona-rosa",
+  "version": "1.0.0",
+  "description": "Panel de administración Doña Rosa – HTML/CSS/JS + funciones serverless para MySQL",
+  "main": "index.html",
+  "scripts": {
+    "dev": "vercel dev",
+    "start": "vercel dev"
+  },
+  "dependencies": {
+    "mysql2": "^3.9.2"
+  }
+}

@@ -1,0 +1,838 @@
+/* ========================================== */
+/* ==     RESET BÁSICO Y ESTILOS BASE      == */
+/* ========================================== */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #121212; /* Un negro más profundo */
+    color: #e0e0e0; /* Un gris claro para mejor lectura */
+    line-height: 1.6;
+    display: flex; /* Usar flex para el layout general */
+    min-height: 100vh;
+    flex-direction: column; /* Header, Main, etc., en columna */
+}
+
+a {
+    color: #bb86fc; /* Color de acento principal (morado claro) */
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+a:hover {
+    color: #9a67d3; /* Morado más oscuro al pasar */
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+button {
+    font-family: inherit;
+    cursor: pointer;
+    border: none;
+    border-radius: 4px;
+    padding: 0.6em 1.2em;
+    font-size: 0.95em;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+input,
+textarea,
+select {
+    font-family: inherit;
+    padding: 0.7em;
+    border-radius: 4px;
+    border: 1px solid #444;
+    background-color: #2c2c2c; /* Fondo oscuro para campos */
+    color: #e0e0e0;
+    font-size: 1em;
+    width: 100%;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    outline: none;
+    border-color: #bb86fc; /* Resaltar con color de acento */
+    box-shadow: 0 0 0 2px rgba(187, 134, 252, 0.3); /* Sombra sutil */
+}
+
+textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+/* ========================================== */
+/* ==       LAYOUT Y MENÚ SUPERIOR         == */
+/* ========================================== */
+.top-menu {
+    background-color: #1f1f1f; /* Ligeramente más claro que el body */
+    padding: 0.8rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #333;
+    position: sticky; /* Fijar en la parte superior */
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.menu-icon {
+    color: #e0e0e0;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.menu-icon:hover {
+    color: #bb86fc;
+}
+
+.top-menu span { /* Para "Panel de Administración" */
+    color: #e0e0e0;
+    font-weight: 600;
+    font-size: 1.1em;
+}
+
+/* ========================================== */
+/* ==          MENÚ LATERAL (ADMIN)        == */
+/* ========================================== */
+.side-menu {
+    position: fixed;
+    left: -280px; /* Inicialmente oculto */
+    top: 0;
+    width: 280px; /* Un poco más ancho */
+    height: 100%;
+    background-color: #1f1f1f;
+    color: #e0e0e0;
+    overflow-y: auto; /* Scroll si el contenido es largo */
+    transition: left 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); /* Transición más suave */
+    z-index: 1010; /* Por encima del top-menu */
+    display: flex;
+    flex-direction: column;
+    box-shadow: 4px 0 15px rgba(0, 0, 0, 0.4);
+    border-right: 1px solid #333;
+      display: none !important; /* !important para asegurar que sobreescriba otras reglas */
+    visibility: hidden !important;
+}
+
+/* Ocultar el icono de menú en la barra superior */
+.top-menu .menu-icon {
+    display: none !important;
+    visibility: hidden !important;
+}
+
+/* (Opcional) Ajustar el espacio si el icono de menú era el único elemento a la izquierda */
+.top-menu {
+    /* Si necesitas ajustar la justificación del contenido ahora que falta el icono */
+    /* Por ejemplo, si quieres que el título "Panel de Administración" se centre o se mueva */
+     justify-content: center; /* O 'flex-end' si quieres el texto a la derecha */
+     position: relative; /* Para asegurar que el centrado funcione bien con sticky */
+}
+
+
+#closeMenuButton {
+    background-color: transparent;
+    color: #aaa;
+    font-size: 1.2em;
+    padding: 15px;
+    text-align: right;
+    border: none;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+#closeMenuButton:hover {
+    color: #fff;
+}
+
+#adminNavLinks {
+    padding: 1rem 0;
+    flex-grow: 1; /* Ocupar espacio restante */
+}
+
+#adminNavLinks h3 {
+    padding: 0.5rem 1.5rem;
+    color: #bb86fc;
+    font-size: 0.85em;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+    margin-top: 1rem;
+}
+#adminNavLinks h3:first-child {
+    margin-top: 0;
+}
+
+#adminNavLinks a {
+    display: flex; /* Para alinear icono (si se añade) y texto */
+    align-items: center;
+    padding: 0.9rem 1.5rem;
+    color: #ccc;
+    font-size: 1em;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    border-left: 3px solid transparent; /* Indicador activo */
+}
+
+#adminNavLinks a:hover {
+    background-color: rgba(187, 134, 252, 0.1); /* Fondo con color de acento */
+    color: #fff;
+}
+
+#adminNavLinks a.active { /* Clase para el enlace activo (añadir con JS) */
+    color: #fff;
+    font-weight: 600;
+    border-left-color: #bb86fc;
+    background-color: rgba(187, 134, 252, 0.15);
+}
+
+#adminNavLinks hr {
+    border: 0;
+    height: 1px;
+    background-color: #333;
+    margin: 1rem 1.5rem;
+}
+
+#adminNavLinks a[onclick*="logout"] { /* Estilo diferente para logout */
+    color: #ff7979; /* Rojo claro para peligro/salida */
+}
+#adminNavLinks a[onclick*="logout"]:hover {
+    background-color: rgba(255, 121, 121, 0.1);
+    color: #ff5252; /* Rojo más intenso */
+}
+
+/* ========================================== */
+/* ==             ENCABEZADO (`header`)     == */
+/* ========================================== */
+header {
+    position: relative;
+    height: 280px; /* Un poco más alto */
+    overflow: hidden;
+    background-color: #1f1f1f; /* Fondo de fallback */
+}
+
+.header-background {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), /* Más oscuro */
+                      url('https://www.reasonwhy.es/media/library/nuevo_burger_king_futuro_0.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    filter: blur(6px); /* Desenfoque sutil */
+    transform: scale(1.05); /* Evitar bordes por el blur */
+}
+
+.header-content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 25px; /* Espacio entre logo e info */
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    height: 100%; /* Ocupar toda la altura del header */
+    color: #fff; /* Texto blanco sobre el fondo oscuro/imagen */
+}
+
+.logo {
+    width: 120px; /* Más grande */
+    height: 120px;
+    border-radius: 12px;
+    object-fit: cover;
+    border: 3px solid rgba(255, 255, 255, 0.7); /* Borde sutil */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    flex-shrink: 0; /* Evitar que se encoja */
+}
+
+.restaurant-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.restaurant-info h1 {
+    font-size: 2.5rem; /* Más grande */
+    margin: 0 0 5px 0;
+    font-weight: 700;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.restaurant-info p {
+    font-size: 1.1rem;
+    margin: 0 0 15px 0;
+    color: #ccc; /* Descripción un poco más tenue */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.info-row {
+    display: flex;
+    flex-wrap: wrap; /* Permitir que se envuelva en pantallas pequeñas */
+    gap: 20px; /* Espacio entre items */
+    margin-top: 10px;
+}
+
+.info-item {
+    display: flex;
+    align-items: center;
+    font-size: 0.95rem;
+    color: #e0e0e0;
+}
+
+.info-item i.feather { /* Estilo específico para iconos feather */
+    margin-right: 8px;
+    color: #bb86fc; /* Color de acento */
+    width: 18px;
+    height: 18px;
+}
+
+/* ========================================== */
+/* ==       ÁREA DE CONTENIDO PRINCIPAL    == */
+/* ========================================== */
+main#adminContentArea {
+    flex-grow: 1; /* Ocupar el espacio restante */
+    padding: 2rem;
+    max-width: 1400px; /* Ancho máximo para el contenido */
+    width: 100%;
+    margin: 0 auto; /* Centrar el contenido */
+}
+
+/* ========================================== */
+/* ==                LOADER                == */
+/* ========================================== */
+.loader-container {
+    display: none; /* Oculto por defecto, mostrar con JS */
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 1rem;
+    min-height: 300px; /* Altura mínima */
+    /* Centrar en su contenedor (ej. dentro de adminContentArea) */
+}
+
+/* (Loader CSS de Uiverse - Mantenido) */
+.loader {
+  width: 45px;
+  height: 40px;
+  background: linear-gradient(#0000 calc(1*100%/6), #fff 0 calc(3*100%/6), #0000 0),
+              linear-gradient(#0000 calc(2*100%/6), #fff 0 calc(4*100%/6), #0000 0),
+              linear-gradient(#0000 calc(3*100%/6), #fff 0 calc(5*100%/6), #0000 0);
+  background-size: 10px 400%;
+  background-repeat: no-repeat;
+  animation: matrix 1s infinite linear;
+}
+
+.loader-text {
+    margin-top: 15px;
+    font-size: 1.1em;
+    color: #aaa;
+    text-align: center;
+}
+
+@keyframes matrix {
+  0% { background-position: 0% 100%, 50% 100%, 100% 100%; }
+  100% { background-position: 0% 0%, 50% 0%, 100% 0%; }
+}
+
+/* ========================================== */
+/* == VISTA GESTIÓN DE PRODUCTOS (ADMIN)   == */
+/* ========================================== */
+#productManagementView .view-header { /* Contenedor para título y botón */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+#productManagementView .view-header h2 {
+    color: #fff;
+    font-size: 1.8em;
+}
+
+/* Botón de Acción Principal (ej. Añadir Producto) */
+.admin-action-btn {
+    background-color: #03dac6; /* Verde azulado (Material Design) */
+    color: #121212; /* Texto oscuro para contraste */
+    padding: 0.7em 1.5em;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+.admin-action-btn:hover {
+    background-color: #01bfa9;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+.admin-action-btn i.feather {
+    width: 18px;
+    height: 18px;
+}
+
+/* Contenedor de Productos en modo Admin */
+#productContainerAdmin {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); /* Tarjetas un poco más anchas */
+    gap: 1.8rem; /* Más espacio */
+}
+
+/* Tarjeta de Producto en modo Admin */
+.menu-item-admin {
+    background-color: #1e1e1e; /* Fondo de tarjeta */
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    border: 1px solid #333;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.menu-item-admin:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+}
+
+.menu-item-admin .item-image {
+    width: 100%;
+    height: 200px; /* Más altura para la imagen */
+    object-fit: cover;
+    border-bottom: 1px solid #333;
+}
+
+.menu-item-admin .item-info {
+    padding: 1.2rem;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1; /* Para que ocupe espacio y empuje acciones abajo */
+    gap: 0.8rem; /* Espacio interno */
+}
+
+.menu-item-admin .item-title h2 {
+    font-size: 1.3em;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 0.3rem;
+}
+
+.menu-item-admin .item-title .price {
+    font-size: 1.1em;
+    color: #03dac6; /* Color de acento para precio */
+    font-weight: 600;
+}
+
+.menu-item-admin .item-description {
+    font-size: 0.9em;
+    color: #aaa;
+    margin-bottom: 0.5rem;
+    flex-grow: 1; /* Ocupar espacio si la descripción es corta */
+}
+
+.menu-item-admin .item-status {
+    font-size: 0.85em;
+    color: #888;
+    border-top: 1px solid #333;
+    padding-top: 0.8rem;
+    display: flex;
+    justify-content: space-between; /* Poner categoría y estado en extremos */
+    flex-wrap: wrap;
+    gap: 5px;
+}
+.menu-item-admin .item-status span[style*="color"] { /* Para el estado coloreado */
+    font-weight: bold;
+}
+
+/* Acciones de Admin en la Tarjeta */
+.item-admin-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.8rem;
+    padding: 1rem 1.2rem; /* Padding para separar de la info */
+    background-color: rgba(0, 0, 0, 0.2); /* Fondo sutil para acciones */
+    border-top: 1px solid #333;
+}
+
+/* Botones de Editar y Eliminar */
+.edit-btn, .delete-btn {
+    padding: 0.5em 1em;
+    font-size: 0.9em;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+.edit-btn i.feather, .delete-btn i.feather {
+    width: 16px;
+    height: 16px;
+}
+
+.edit-btn {
+    background-color: #3b82f6; /* Azul */
+    color: white;
+}
+.edit-btn:hover {
+    background-color: #2563eb;
+}
+
+.delete-btn {
+    background-color: #ef4444; /* Rojo */
+    color: white;
+}
+.delete-btn:hover {
+    background-color: #dc2626;
+}
+
+/* ========================================== */
+/* ==         MODALES (ESTILOS BASE)       == */
+/* ========================================== */
+.modal {
+    display: none; /* Oculto por defecto */
+    position: fixed;
+    z-index: 1050; /* Encima de todo */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto; /* Scroll si el contenido es muy largo */
+    background-color: rgba(0, 0, 0, 0.8); /* Fondo oscuro semi-transparente */
+    padding: 20px; /* Espacio para que el modal no toque los bordes */
+}
+
+/* Animación de entrada (opcional) */
+.modal.show {
+    animation: fadeIn 0.3s ease forwards;
+}
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.modal-content {
+    background-color: #2c2c2c; /* Fondo del contenido del modal */
+    margin: 5% auto; /* Centrado vertical (aproximado) y horizontal */
+    padding: 2rem;
+    border-radius: 8px;
+    position: relative;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+    max-width: 700px; /* Ancho por defecto, puede sobreescribirse */
+    width: 95%; /* Asegurar que no sea demasiado ancho en pantallas pequeñas */
+    animation: slideInUp 0.4s ease forwards; /* Animación de entrada */
+}
+@keyframes slideInUp {
+    from { transform: translateY(30px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+
+.modal-content .close {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    color: #aaa;
+    font-size: 2rem;
+    font-weight: bold;
+    line-height: 1;
+    cursor: pointer;
+    transition: color 0.3s ease;
+    border: none;
+    background: none;
+    padding: 0;
+}
+
+.modal-content .close:hover,
+.modal-content .close:focus {
+    color: #fff;
+    text-decoration: none;
+}
+
+.modal-title {
+    color: #fff;
+    font-size: 1.6em;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    border-bottom: 1px solid #444;
+    padding-bottom: 0.8rem;
+}
+
+/* ========================================== */
+/* == MODAL ADMIN (AÑADIR/EDITAR PRODUCTO) == */
+/* ========================================== */
+#adminProductModal .modal-content {
+    max-width: 750px; /* Un poco más ancho para el formulario */
+}
+
+#adminProductForm {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem; /* Espacio entre grupos de formulario */
+}
+
+#adminProductForm .form-group {
+    /* No necesita estilos extra si el gap del form funciona */
+}
+
+#adminProductForm label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #ccc;
+    font-weight: 500;
+    font-size: 0.9em;
+}
+
+#adminProductForm hr {
+    border: 0;
+    height: 1px;
+    background-color: #444;
+    margin: 1rem 0;
+}
+
+#adminProductForm h4 {
+    color: #bb86fc; /* Color de acento para títulos de sección */
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+    font-size: 1.2em;
+    font-weight: 600;
+    border-bottom: 1px solid #444;
+    padding-bottom: 0.3rem;
+}
+
+/* Estilos para entradas dinámicas (Tamaño/Precio y Extras) */
+.form-inline-group {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin-bottom: 0.8rem;
+    padding: 0.8rem;
+    background-color: #383838; /* Fondo para agrupar */
+    border-radius: 6px;
+    border: 1px solid #4a4a4a;
+}
+
+.form-inline-group input[type="text"],
+.form-inline-group input[type="number"] {
+    margin-bottom: 0; /* Anular margen si lo hereda */
+}
+.form-inline-group input[type="text"] { flex-grow: 3; }
+.form-inline-group input[type="number"] { flex-grow: 2; }
+
+
+/* Botón para eliminar fila dinámica */
+.delete-btn-inline {
+    background-color: #555;
+    color: #ccc;
+    border: none;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    line-height: 28px;
+    text-align: center;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+    padding: 0;
+    flex-shrink: 0;
+    font-size: 1em;
+}
+.delete-btn-inline:hover {
+    background-color: #ef4444;
+    color: white;
+}
+
+/* Botón para añadir fila dinámica */
+#adminProductForm button[onclick*="addSizePriceEntry"],
+#adminProductForm button[onclick*="addExtraEntry"] {
+    background-color: #3b82f6; /* Azul */
+    color: white;
+    padding: 0.6em 1em;
+    font-size: 0.9em;
+    align-self: flex-start; /* Alinear a la izquierda */
+    margin-top: -0.5rem; /* Acercar al contenedor anterior */
+}
+#adminProductForm button[onclick*="addSizePriceEntry"]:hover,
+#adminProductForm button[onclick*="addExtraEntry"]:hover {
+    background-color: #2563eb;
+}
+
+
+/* Botones de acción al final del modal admin */
+#adminProductForm .modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid #444;
+}
+
+.modal-save-btn, .modal-cancel-btn {
+    padding: 0.7em 1.8em; /* Más padding horizontal */
+    font-size: 1em;
+    font-weight: 600;
+}
+
+.modal-save-btn {
+    background-color: #03dac6; /* Verde azulado */
+    color: #121212;
+}
+.modal-save-btn:hover {
+    background-color: #01bfa9;
+}
+
+.modal-cancel-btn {
+    background-color: #444; /* Gris oscuro */
+    color: #ccc;
+}
+.modal-cancel-btn:hover {
+    background-color: #555;
+}
+
+/* ========================================== */
+/* ==   MODAL CONFIRMACIÓN DE ELIMINACIÓN  == */
+/* ========================================== */
+#confirmDeleteModal .modal-content {
+    max-width: 500px; /* Ancho adecuado */
+    text-align: center;
+}
+
+#confirmDeleteModal .modal-title {
+    color: #ef4444; /* Rojo */
+    border-bottom: none;
+    font-size: 1.5em;
+}
+
+#confirmDeleteModal p {
+    color: #ccc;
+    margin-bottom: 0.8rem;
+    font-size: 1.05em;
+}
+
+#confirmDeleteModal #productNameToDelete {
+    color: #03dac6; /* Resaltar nombre */
+    font-weight: bold;
+    font-size: 1.1em;
+    display: block;
+    margin: 0.5rem 0 1rem 0;
+    background-color: rgba(3, 218, 198, 0.1);
+    padding: 0.5rem;
+    border-radius: 4px;
+}
+
+#confirmDeleteModal p[style*="color: #ffcc00;"] { /* Para la advertencia */
+    color: #facc15 !important; /* Amarillo */
+    font-weight: 600;
+}
+
+#confirmDeleteModal .modal-actions {
+     display: flex;
+     justify-content: center;
+     gap: 1.5rem; /* Más espacio entre botones */
+     margin-top: 1.5rem;
+     border-top: 1px solid #444;
+     padding-top: 1.5rem;
+}
+
+#confirmDeleteModal .modal-cancel-btn {
+     /* Hereda estilo base */
+}
+
+#confirmDeleteModal #confirmDeleteProductBtnFinal {
+    background-color: #ef4444; /* Rojo */
+    color: white;
+     font-weight: 600;
+     padding: 0.7em 1.8em;
+}
+#confirmDeleteModal #confirmDeleteProductBtnFinal:hover {
+     background-color: #dc2626;
+}
+
+/* ========================================== */
+/* ==            RESPONSIVIDAD             == */
+/* ========================================== */
+@media (max-width: 768px) {
+    .header-content {
+        flex-direction: column;
+        align-items: center; /* Centrar logo e info en pantallas pequeñas */
+        text-align: center;
+        gap: 15px;
+        padding: 15px;
+    }
+
+    .restaurant-info h1 {
+        font-size: 2rem;
+    }
+    .restaurant-info p {
+        font-size: 1rem;
+    }
+    .info-row {
+        justify-content: center;
+    }
+
+    main#adminContentArea {
+        padding: 1.5rem;
+    }
+
+     #productContainerAdmin {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .menu-item-admin .item-info {
+        padding: 1rem;
+    }
+     .menu-item-admin .item-admin-actions {
+        padding: 0.8rem 1rem;
+    }
+
+    .modal-content {
+        padding: 1.5rem;
+        margin: 10% auto;
+    }
+    .modal-title {
+        font-size: 1.4em;
+    }
+
+    .form-inline-group {
+        flex-direction: column; /* Apilar inputs en móvil */
+        align-items: stretch; /* Ocupar todo el ancho */
+        padding: 0.6rem;
+    }
+    .form-inline-group button {
+        margin-top: 0.5rem;
+        align-self: flex-end; /* Botón de eliminar a la derecha */
+    }
+     #adminProductForm button[onclick*="addSizePriceEntry"],
+     #adminProductForm button[onclick*="addExtraEntry"] {
+         align-self: stretch; /* Ocupar todo el ancho */
+         margin-top: 0;
+     }
+
+
+    #adminProductForm .modal-actions,
+    #confirmDeleteModal .modal-actions {
+        flex-direction: column-reverse; /* Apilar botones, guardar/eliminar arriba */
+        gap: 0.8rem;
+    }
+     #adminProductForm .modal-actions button,
+     #confirmDeleteModal .modal-actions button {
+        width: 100%; /* Botones ocupan todo el ancho */
+     }
+
+}

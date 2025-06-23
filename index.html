@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ADMIN BURGER KING</title>
+    <!-- Asegúrate que la ruta a styles.css sea correcta -->
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://unpkg.com/feather-icons"></script>
+    <!-- Carga el script de admin -->
+    <!-- Asegúrate que la ruta a admin-script.js sea correcta -->
+    <script src="script.js" defer></script>
+    <!-- Leaflet (se mantiene por si se usa en Pedidos más adelante) -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
+    <style>
+        /* Estilo rápido para ocultar el script inline si prefieres no eliminarlo */
+        /* script[data-inline-placeholder] { display: none; } */
+    </style>
+</head>
+<body>
+    <!-- Menú superior -->
+    <nav class="top-menu">
+       <!-- <i data-feather="menu" class="menu-icon" onclick="toggleMenu()"></i>-->
+        <span>Panel de Administración</span>
+        <!-- Aquí podría ir un botón de Logout real -->
+    </nav>
+
+    <!-- Menú lateral de Administración -->
+    <div id="side-menu" class="side-menu">
+        <!-- <button id="closeMenuButton" onclick="toggleMenu()">Cerrar Menú</button> -->
+        <div id="adminNavLinks">
+            <h3>Gestión</h3>
+            <!-- Usar data-view para simplificar el JS de navegación (opcional) -->
+            <a href="#" data-view="productManagementView">Gestionar Productos</a>
+            <a href="#" data-view="orderManagementView">Gestionar Pedidos</a>
+            <hr>
+            <a href="#" id="logoutButton">Cerrar Sesión</a>
+        </div>
+    </div>
+
+    <!-- Encabezado -->
+    <header>
+        <div class="header-background"></div>
+        <div class="header-content">
+            <img src="https://res.cloudinary.com/du83rwgxa/image/upload/v1746636672/w36dbwdecxjeuwbsxncg.jpg" alt="Logo Restaurante" class="logo">
+            <div class="restaurant-info">
+                <h1>LA CASA DE DOÑA ROSA</h1>
+                <p>Gestión de Contenido y Pedidos</p>
+                <div class="info-row">
+                    <span class="info-item"><i data-feather="clock"></i> Horario </span>
+                    <span class="info-item"><i data-feather="map-pin"></i> Direccion</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Loader -->
+    <div id="loader" class="loader-container" style="display: none;">
+        <div class="loader"></div>
+        <p class="loader-text">Cargando...</p>
+    </div>
+
+    <!-- Contenedor principal para las vistas de administración -->
+    <main id="adminContentArea">
+
+        <!-- Vista Gestión de Productos (Visible por defecto) -->
+        <div id="productManagementView" style="display: block;">
+            <!-- Contenedor para título, filtro y botón -->
+            <div class="view-header">
+                <h2>Gestionar Productos</h2>
+                <div class="filter-controls">
+                     <label for="categoryFilter">Filtrar por Categoría:</label>
+                     <select id="categoryFilter">
+                         <option value="all">Todas las Categorías</option>
+                         <!-- Opciones se añadirán con JS -->
+                     </select>
+                </div>
+                <!-- Botón usa openAdminProductModal() directamente -->
+                <button id="addNewProductBtn" class="admin-action-btn">
+                    <i data-feather="plus-circle"></i> Añadir Nuevo Producto
+                </button>
+            </div>
+
+            <!-- Contenedor donde se renderizan los productos -->
+            <div id="productContainerAdmin">
+                <!-- Productos se insertarán aquí... -->
+            </div>
+        </div>
+
+        <!-- Vista Gestión de Pedidos (Oculta por defecto) -->
+        <div id="orderManagementView" style="display: none;">
+            <div class="view-header">
+                 <h2>Gestión de Pedidos</h2>
+                 <!-- Podrían ir filtros de pedidos aquí -->
+            </div>
+            <div id="orderContainerAdmin">
+                 <p>Cargando pedidos...</p>
+                 <!-- Pedidos se insertarán aquí... -->
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Modal para Añadir/Editar Producto -->
+    <div id="adminProductModal" class="modal">
+        <div class="modal-content">
+            <button class="close" onclick="closeAdminProductModal()" aria-label="Cerrar modal">×</button>
+            <h2 id="adminModalTitle" class="modal-title">Gestionar Producto</h2>
+
+            <form id="adminProductForm">
+                <input type="hidden" id="adminProductId">
+
+                <div class="form-group">
+                    <label for="adminProductName">Nombre:</label>
+                    <input type="text" id="adminProductName" name="adminProductName" required>
+                  <div id="existingProductReference" style="display: none;"></div> <!-- Contenedor para la referencia -->
+                </div>
+
+                <div class="form-group">
+                    <label for="adminProductDescription">Descripción:</label>
+                    <textarea id="adminProductDescription" name="adminProductDescription"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="adminProductCategory">Categoría:</label>
+                    <input type="text" id="adminProductCategory" name="adminProductCategory" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="adminProductImage">URL de la Imagen:</label>
+                    <input type="text" id="adminProductImage" name="adminProductImage">
+                </div>
+
+                                <!-- Estado (Activo / Inactivo) -->
+                <label for="adminProductStatus">Estado:</label>
+                <select id="adminProductStatus" name="adminProductStatus" required>
+                  <option value="Activo">Activo (Visible)</option>
+                  <option value="Inactivo">Inactivo (Oculto)</option>
+                </select>
+
+
+                <!-- CAMBIO: Campo para Limite de Extras añadido -->
+                <div class="form-group">
+                    <label for="adminProductExtrasLimit">Límite de Extras (Opcional, 0 o vacío para ilimitado):</label>
+                    <input type="number" id="adminProductExtrasLimit" name="adminProductExtrasLimit" min="0" step="1" placeholder="Ej: 3">
+                </div>
+
+                <!-- CAMBIO: Sección de Estado ELIMINADA -->
+                <!-- <div class="form-group"> ... Estado ... </div> -->
+
+                <hr>
+                <h4>Tamaños y Precios (Para esta Variante)</h4>
+                <div id="adminSizesPricesContainer">
+                    <!-- Filas de tamaño/precio se añadirán aquí con JS -->
+                </div>
+                <!-- Botón para añadir MÁS tamaños/precios (puede ocultarse en modo edición) -->
+                <button type="button" class="add-entry-btn" onclick="addSizePriceEntry()">+ Añadir Tamaño/Precio</button>
+
+                <hr>
+                <h4>Extras (Opcional)</h4>
+                 <div id="adminExtrasContainer">
+                    <!-- Filas de extras se añadirán aquí con JS -->
+                 </div>
+                <button type="button" class="add-entry-btn" onclick="addExtraEntry()">+ Añadir Extra</button>
+
+                <hr>
+                <div class="modal-actions">
+                     <button type="button" class="modal-cancel-btn" onclick="closeAdminProductModal()">Cancelar</button>
+                     <!-- El type="submit" activará el listener del form -->
+                     <button type="submit" id="saveProductBtn" class="modal-save-btn">Guardar Cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de Confirmación para Eliminar -->
+    <div id="confirmDeleteModal" class="modal">
+        <div class="modal-content">
+             <button class="close" onclick="closeConfirmDeleteModal()" aria-label="Cerrar modal">×</button>
+            <h2 class="modal-title">Confirmar Eliminación</h2>
+            <p>¿Estás seguro de que deseas eliminar esta variante?</p>
+            <p><strong><span id="productNameToDelete">Nombre del producto aquí</span></strong></p>
+            <p style="color: #facc15;">Esta acción no se puede deshacer.</p> <!-- Usando el color amarillo del CSS -->
+            <input type="hidden" id="deleteProductId">
+            <div class="modal-actions">
+                <button type="button" class="modal-cancel-btn" onclick="closeConfirmDeleteModal()">Cancelar</button>
+                <!-- ID único para el botón final -->
+                <button type="button" id="confirmDeleteProductBtnFinal" class="delete-btn">Eliminar Definitivamente</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Placeholder Inline (Opcional, si no usas admin-script.js externo) -->
+    <!-- Si mueves todo a admin-script.js, puedes eliminar este bloque <script> -->
+    <!-- <script data-inline-placeholder>
+        // Funciones placeholder originales (si no están en admin-script.js)
+        function toggleMenu() { console.warn("toggleMenu no implementado aquí si se usa archivo externo"); }
+        function loadProductManagementView() { console.warn("loadProductManagementView no implementado aquí si se usa archivo externo"); }
+        function loadOrderManagementView() { console.warn("loadOrderManagementView no implementado aquí si se usa archivo externo"); }
+        function logout() { alert("Logout no implementado"); }
+        function openAdminProductModal(id = null) { alert("openAdminProductModal no implementado aquí"); }
+        function closeAdminProductModal() { document.getElementById('adminProductModal').style.display = 'none'; }
+        function addSizePriceEntry(s='', p='') { console.warn("addSizePriceEntry no implementado aquí"); }
+        function addExtraEntry(n='', p='') { console.warn("addExtraEntry no implementado aquí"); }
+        function removeEntry(btn) { btn.parentElement.remove(); }
+        function confirmDeleteProduct(id) { alert("confirmDeleteProduct no implementado aquí"); }
+        function closeConfirmDeleteModal() { document.getElementById('confirmDeleteModal').style.display = 'none'; }
+
+        // Inicialización básica de iconos
+        document.addEventListener('DOMContentLoaded', () => feather.replace());
+    </script> -->
+
+</body>
+</html>
