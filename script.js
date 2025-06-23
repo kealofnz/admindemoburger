@@ -41,8 +41,9 @@ const confirmDeleteProductBtnFinal = document.getElementById('confirmDeleteProdu
 
 if (!localStorage.getItem('adminLoggedIn')) {
   alert('No has iniciado sesión.');
-  window.location.href = '/login.html';
+  window.location.href = '/index.html';
 }
+
 
 // --- Variables Globales ---
 let currentProducts = []; // Para almacenar los productos cargados
