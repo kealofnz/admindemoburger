@@ -88,6 +88,16 @@ loginForm?.addEventListener('submit', async (e) => {
   }
 });
 
+const logoutBtn = document.getElementById('logoutBtn');
+if (logoutBtn) {
+    logoutBtn.addEventListener('click', () => {
+        // Elimina la clave de localStorage
+        localStorage.removeItem('adminLoggedIn');
+        // Redirige al login
+        window.location.href = '/login.html';
+    });
+}
+
 
 function loadProductManagementView() {
     showView(productManagementView);
