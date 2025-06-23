@@ -39,6 +39,11 @@ const confirmDeleteProductBtnFinal = document.getElementById('confirmDeleteProdu
 
 // ... (Resto de tu código: Variables Globales, Funciones, Inicialización) ...
 
+if (!localStorage.getItem('adminLoggedIn')) {
+  alert('No has iniciado sesión.');
+  window.location.href = '/login.html';
+}
+
 // --- Variables Globales ---
 let currentProducts = []; // Para almacenar los productos cargados
 
